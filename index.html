@@ -3,353 +3,263 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>morich｜求人情報</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<title>求人情報｜morich</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --red:#C8253A;--red-light:#f7e8ea;--red-mid:#e8c0c6;--red-dark:#8f1528;
-  --rose:#fdf2f3;--warm:#fffaf9;
-  --text:#2a1a1c;--text-mid:#7a5058;--text-light:#b08890;
-  --border:rgba(200,37,58,0.12);--bsoft:rgba(200,37,58,0.06);
-}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans JP',sans-serif;background:var(--warm);color:var(--text);line-height:1.7;}
+body{font-family:'Noto Sans JP',sans-serif;background:#f5f5f5;color:#333;line-height:1.8;font-size:14px;}
 
 /* ── ヘッダー ── */
-.site-header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:10;}
-@media(max-width:600px){.site-header{padding:0 18px;}}
+.header{background:#fff;border-bottom:2px solid #C8253A;padding:18px 32px;display:flex;align-items:center;justify-content:space-between;}
+@media(max-width:600px){.header{padding:14px 18px;}}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.logo-mark{width:32px;height:32px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Noto Serif JP',serif;font-size:13px;flex-shrink:0;}
-.logo-text{font-family:'Noto Serif JP',serif;font-size:17px;color:var(--red);letter-spacing:2.5px;}
-.logo-sub{font-size:9.5px;color:var(--text-light);letter-spacing:1.2px;margin-top:1px;}
-.header-nav{display:flex;align-items:center;gap:28px;}
-.header-nav a{font-size:12px;color:var(--text-mid);text-decoration:none;letter-spacing:0.5px;transition:color .2s;}
-.header-nav a:hover{color:var(--red);}
-.nav-cta{background:var(--red);color:#fff !important;padding:7px 18px;border-radius:20px;font-size:11.5px !important;}
-.nav-cta:hover{background:var(--red-dark) !important;}
-@media(max-width:600px){.header-nav{gap:14px;} .header-nav a:not(.nav-cta){display:none;}}
+.logo-mark{width:34px;height:34px;background:#C8253A;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;}
+.logo-name{font-size:20px;font-weight:700;color:#C8253A;letter-spacing:3px;}
+.header-sub{font-size:11px;color:#aaa;letter-spacing:1px;}
 
 /* ── ヒーロー ── */
-.hero{background:linear-gradient(135deg,#C8253A 0%,#e0596b 55%,#c84060 100%);padding:64px 40px 56px;position:relative;overflow:hidden;text-align:center;}
-.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,0.05);}
-.hero::after{content:'';position:absolute;bottom:-60px;left:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.04);}
-.hero-label{display:inline-block;font-size:10px;letter-spacing:2.5px;color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:4px 14px;margin-bottom:18px;}
-.hero-title{font-family:'Noto Serif JP',serif;font-size:34px;font-weight:400;color:#fff;line-height:1.45;letter-spacing:2px;margin-bottom:14px;}
-.hero-title em{font-style:normal;font-weight:500;}
-.hero-sub{font-size:13px;color:rgba(255,255,255,0.82);line-height:1.85;max-width:500px;margin:0 auto 32px;}
-.hero-stats{display:flex;align-items:center;justify-content:center;gap:40px;margin-top:32px;flex-wrap:wrap;}
+.hero{background:#fff;border-bottom:1px solid #eee;padding:40px 32px 36px;text-align:center;}
+@media(max-width:600px){.hero{padding:28px 18px;}}
+.hero-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px;}
+.hero-logo-mark{width:48px;height:48px;background:#C8253A;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;}
+.hero-logo-name{font-size:28px;font-weight:700;color:#C8253A;letter-spacing:4px;}
+.hero-tagline{font-size:13px;color:#888;letter-spacing:0.5px;margin-bottom:28px;}
+.hero-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;}
 .hero-stat{text-align:center;}
-.hero-stat-num{font-family:'Noto Serif JP',serif;font-size:26px;color:#fff;font-weight:300;}
-.hero-stat-num span{font-size:13px;margin-left:2px;}
-.hero-stat-label{font-size:10px;color:rgba(255,255,255,0.65);letter-spacing:1px;margin-top:2px;}
-.hero-divider{width:1px;height:32px;background:rgba(255,255,255,0.2);}
+.hero-stat-num{font-size:24px;font-weight:700;color:#C8253A;}
+.hero-stat-num span{font-size:13px;font-weight:400;margin-left:1px;}
+.hero-stat-label{font-size:10px;color:#aaa;letter-spacing:1px;margin-top:2px;}
 
-/* ── メイン ── */
-.main{max-width:1080px;margin:0 auto;padding:48px 24px 80px;}
+/* ── 検索 ── */
+.search-bar{background:#fff;border-bottom:1px solid #eee;padding:16px 32px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:5;}
+@media(max-width:600px){.search-bar{padding:12px 16px;}}
+.search-wrap{flex:1;min-width:180px;position:relative;}
+.search-wrap input{width:100%;padding:9px 12px 9px 34px;border:1px solid #ddd;border-radius:4px;font-size:13px;font-family:'Noto Sans JP',sans-serif;color:#333;outline:none;transition:border-color .2s;background:#fafafa;}
+.search-wrap input:focus{border-color:#C8253A;background:#fff;}
+.search-wrap input::placeholder{color:#bbb;}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#bbb;}
+.result-count{font-size:12px;color:#aaa;white-space:nowrap;}
+.result-count strong{color:#C8253A;}
 
-/* 検索 + フィルター */
-.search-wrap{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap;}
-.search-box{flex:1;min-width:200px;position:relative;}
-.search-box input{width:100%;padding:10px 14px 10px 38px;border:1px solid var(--border);border-radius:24px;font-size:13px;font-family:'Noto Sans JP',sans-serif;background:#fff;color:var(--text);outline:none;transition:border-color .2s;}
-.search-box input:focus{border-color:var(--red);}
-.search-box input::placeholder{color:var(--text-light);}
-.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text-light);}
-.result-count{font-size:12px;color:var(--text-light);white-space:nowrap;}
-.result-count strong{color:var(--red);font-weight:500;}
+/* ── フィルター ── */
+.filter-bar{background:#fff;border-bottom:1px solid #eee;padding:10px 32px;display:flex;flex-wrap:wrap;gap:6px;}
+@media(max-width:600px){.filter-bar{padding:10px 16px;}}
+.ftag{font-size:11.5px;padding:4px 12px;border-radius:2px;border:1px solid #ddd;color:#666;cursor:pointer;background:#fff;transition:all .15s;user-select:none;}
+.ftag:hover,.ftag.active{background:#C8253A;color:#fff;border-color:#C8253A;}
 
-.filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px;}
-.filter-tag{font-size:11.5px;padding:5px 13px;border-radius:20px;border:1px solid var(--border);color:var(--text-mid);cursor:pointer;background:#fff;transition:all .15s;user-select:none;}
-.filter-tag:hover,.filter-tag.active{background:var(--red);color:#fff;border-color:var(--red);}
+/* ── リスト ── */
+.list-wrap{max-width:760px;margin:24px auto;padding:0 24px 60px;}
+@media(max-width:600px){.list-wrap{padding:0 0 48px;}}
 
-/* 求人グリッド */
-.jobs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-@media(max-width:920px){.jobs-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:560px){.jobs-grid{grid-template-columns:1fr;}}
+/* ── 求人カード ── */
+.job-item{background:#fff;border-bottom:1px solid #eee;padding:20px 24px;cursor:pointer;text-decoration:none;color:inherit;display:block;transition:background .15s;}
+.job-item:first-child{border-top:1px solid #eee;}
+.job-item:hover{background:#fdf2f3;}
+.ji-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
+.ji-company{font-size:12px;color:#aaa;margin-bottom:3px;}
+.ji-position{font-size:15px;font-weight:500;color:#333;line-height:1.5;}
+.ji-salary{font-size:13px;font-weight:700;color:#C8253A;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.ji-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.ji-tag{font-size:10.5px;padding:2px 8px;border-radius:2px;background:#f5f5f5;border:1px solid #e0e0e0;color:#666;}
+.ji-tag.red{background:#fdf2f3;border-color:#e8c0c6;color:#C8253A;}
+.ji-recommend{font-size:12px;color:#888;line-height:1.65;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.ji-location{font-size:11px;color:#bbb;margin-top:6px;display:flex;align-items:center;gap:4px;}
 
-/* ローディング */
-.loading{text-align:center;padding:60px;color:var(--text-light);font-size:13px;}
-.spinner-lg{width:32px;height:32px;border:2px solid var(--red-mid);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+/* ── 空・ロード ── */
+.empty{text-align:center;padding:60px 24px;color:#bbb;font-size:13px;}
+.loading-block{text-align:center;padding:60px 24px;color:#bbb;font-size:13px;}
+.spinner{width:24px;height:24px;border:2px solid #e8c0c6;border-top-color:#C8253A;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* 求人カード */
-.job-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .2s,transform .2s;cursor:pointer;text-decoration:none;color:inherit;}
-.job-card:hover{box-shadow:0 6px 28px rgba(200,37,58,0.11);transform:translateY(-2px);}
-.jc-top{padding:18px 18px 12px;flex:1;}
-.jc-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:11px;min-height:20px;}
-.jc-badge{font-size:9.5px;padding:2px 8px;border-radius:20px;}
-.jc-badge.industry{background:var(--rose);color:var(--text-mid);border:1px solid var(--border);}
-.jc-badge.remote-hybrid{background:#e8f0f8;color:#1a5a9a;border:1px solid #b3d0f0;}
-.jc-badge.remote-full{background:#e8f5ee;color:#2a7a4a;border:1px solid #a8d4b8;}
-.jc-badge.remote-office{background:#f5f5f5;color:#666;border:1px solid #ddd;}
-.jc-badge.sidejob{background:#fff8e1;color:#7a5a00;border:1px solid #ffe082;}
-.jc-badge.listed{background:#fdf2f3;color:var(--red);border:1px solid var(--red-mid);}
-.jc-company{font-size:11px;color:var(--text-light);margin-bottom:4px;}
-.jc-title{font-family:'Noto Serif JP',serif;font-size:14.5px;font-weight:500;color:var(--text);line-height:1.55;margin-bottom:9px;}
-.jc-recommend{font-size:11px;color:var(--text-mid);line-height:1.75;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.jc-bottom{padding:10px 18px;border-top:1px solid var(--bsoft);display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--rose);}
-.jc-location{font-size:10.5px;color:var(--text-light);display:flex;align-items:center;gap:3px;}
-.jc-salary{font-size:11.5px;font-weight:500;color:var(--red);}
+/* ── ページネーション ── */
+.pagination{display:flex;align-items:center;justify-content:center;gap:3px;margin-top:28px;flex-wrap:wrap;}
+.pbtn{min-width:34px;height:34px;padding:0 8px;display:flex;align-items:center;justify-content:center;border:1px solid #ddd;font-size:12.5px;cursor:pointer;background:#fff;color:#666;transition:all .15s;font-family:'Noto Sans JP',sans-serif;border-radius:2px;}
+.pbtn:hover{border-color:#C8253A;color:#C8253A;}
+.pbtn.active{background:#C8253A;color:#fff;border-color:#C8253A;}
+.pbtn:disabled{opacity:.3;cursor:default;pointer-events:none;}
+.page-info{font-size:11px;color:#bbb;padding:0 8px;}
 
-/* 空状態 */
-.empty{text-align:center;padding:72px 24px;color:var(--text-light);}
-.empty-icon{font-size:32px;margin-bottom:12px;opacity:.4;}
-.empty p{font-size:13px;}
-
-/* ページネーション */
-.pagination{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:40px;flex-wrap:wrap;}
-.page-btn{min-width:36px;height:36px;padding:0 10px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:8px;font-size:12.5px;cursor:pointer;background:#fff;color:var(--text-mid);transition:all .15s;font-family:'Noto Sans JP',sans-serif;}
-.page-btn:hover{border-color:var(--red);color:var(--red);}
-.page-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
-.page-btn:disabled{opacity:.35;cursor:default;pointer-events:none;}
-.page-info{font-size:11.5px;color:var(--text-light);padding:0 8px;}
-
-/* CTAバナー */
-.cta-banner{background:linear-gradient(135deg,var(--red) 0%,#e05a70 100%);border-radius:16px;padding:40px;display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:52px;flex-wrap:wrap;}
-.cta-title{font-family:'Noto Serif JP',serif;font-size:20px;color:#fff;font-weight:400;margin-bottom:6px;}
-.cta-sub{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.7;}
-.cta-btn{background:#fff;color:var(--red);font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:500;padding:12px 28px;border-radius:25px;text-decoration:none;white-space:nowrap;transition:opacity .2s;}
-.cta-btn:hover{opacity:.88;}
-
-/* フッター */
-.site-footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.footer-logo{display:flex;align-items:center;gap:8px;}
-.footer-copy{font-size:11px;color:var(--text-light);}
-.footer-nav{display:flex;gap:20px;}
-.footer-nav a{font-size:11px;color:var(--text-light);text-decoration:none;}
-.footer-nav a:hover{color:var(--red);}
-@media(max-width:600px){.site-footer{padding:24px 18px;flex-direction:column;align-items:flex-start;}}
+/* ── フッター ── */
+.footer{text-align:center;padding:28px;font-size:11px;color:#bbb;}
+.footer-logo{font-size:13px;font-weight:700;color:#C8253A;letter-spacing:3px;margin-bottom:4px;}
 </style>
 </head>
 <body>
 
-<header class="site-header">
-  <a class="logo" href="/">
+<div class="header">
+  <a class="logo" href="index.html">
     <div class="logo-mark">m</div>
-    <div>
-      <div class="logo-text">morich</div>
-      <div class="logo-sub">JOBS</div>
-    </div>
+    <div class="logo-name">morich</div>
   </a>
-  <nav class="header-nav">
-    <a href="#">求人を探す</a>
-    <a href="#">morichについて</a>
-    <a href="mailto:info@morich.jp" class="nav-cta">無料相談</a>
-  </nav>
-</header>
+  <div class="header-sub">JOBS</div>
+</div>
 
-<section class="hero">
-  <div class="hero-label">MORICH JOBS</div>
-  <h1 class="hero-title">あなたの<em>「はたらく」</em>を、<br>もっと自由に。</h1>
-  <p class="hero-sub">morichは、ひとりひとりの可能性を最大化するための転職支援をしています。<br>厳選されたポジションを、プロのコンサルタントがご紹介します。</p>
+<div class="hero">
+  <div class="hero-logo">
+    <div class="hero-logo-mark">m</div>
+    <div class="hero-logo-name">morich</div>
+  </div>
+  <div class="hero-tagline">厳選された求人を、プロのコンサルタントがご紹介します。</div>
   <div class="hero-stats">
     <div class="hero-stat">
       <div class="hero-stat-num" id="stat-count">—</div>
       <div class="hero-stat-label">公開求人数</div>
     </div>
-    <div class="hero-divider"></div>
     <div class="hero-stat">
       <div class="hero-stat-num">98<span>%</span></div>
       <div class="hero-stat-label">定着率</div>
     </div>
-    <div class="hero-divider"></div>
     <div class="hero-stat">
       <div class="hero-stat-num">15<span>年</span></div>
       <div class="hero-stat-label">支援実績</div>
     </div>
   </div>
-</section>
+</div>
 
-<main class="main">
+<div class="search-bar">
   <div class="search-wrap">
-    <div class="search-box">
-      <svg class="search-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="search-input" placeholder="会社名・ポジション・キーワードで検索">
-    </div>
-    <div class="result-count" id="result-count"></div>
+    <svg class="search-icon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search-input" placeholder="会社名・ポジション・キーワードで絞り込み">
   </div>
+  <div class="result-count" id="result-count"></div>
+</div>
 
-  <div class="filter-bar" id="filter-bar">
-    <div class="filter-tag active" data-filter="all">すべて</div>
-    <div class="filter-tag" data-filter="IT・通信・インターネット">IT・通信</div>
-    <div class="filter-tag" data-filter="サービス・レジャー">サービス</div>
-    <div class="filter-tag" data-filter="金融・保険">金融・保険</div>
-    <div class="filter-tag" data-filter="メーカー">メーカー</div>
-    <div class="filter-tag" data-filter="コンサルティング">コンサル</div>
-    <div class="filter-tag" data-filter="不動産・建設・設備">不動産</div>
-    <div class="filter-tag" data-filter="流通・小売">流通・小売</div>
-    <div class="filter-tag" data-filter="マスコミ・広告・デザイン">マスコミ</div>
-  </div>
+<div class="filter-bar" id="filter-bar">
+  <div class="ftag active" data-filter="all">すべて</div>
+  <div class="ftag" data-filter="IT・通信・インターネット">IT・通信</div>
+  <div class="ftag" data-filter="サービス・レジャー">サービス</div>
+  <div class="ftag" data-filter="金融・保険">金融・保険</div>
+  <div class="ftag" data-filter="メーカー">メーカー</div>
+  <div class="ftag" data-filter="コンサルティング">コンサル</div>
+  <div class="ftag" data-filter="不動産・建設・設備">不動産</div>
+  <div class="ftag" data-filter="流通・小売">流通・小売</div>
+  <div class="ftag" data-filter="マスコミ・広告・デザイン">マスコミ</div>
+</div>
 
+<div class="list-wrap">
   <div id="jobs-container">
-    <div class="loading">
-      <div class="spinner-lg"></div>
-      求人情報を読み込んでいます...
+    <div class="loading-block">
+      <div class="spinner"></div>
+      読み込んでいます...
     </div>
   </div>
-
   <div id="pagination" class="pagination"></div>
+</div>
 
-  <div class="cta-banner">
-    <div>
-      <div class="cta-title">気になる求人が見つかりましたか？</div>
-      <div class="cta-sub">まずはお気軽にご相談ください。<br>あなたの状況に合わせて、専任コンサルタントがサポートします。</div>
-    </div>
-    <a href="mailto:info@morich.jp" class="cta-btn">無料で相談する →</a>
-  </div>
-</main>
-
-<footer class="site-footer">
-  <div class="footer-logo">
-    <div class="logo-mark" style="width:24px;height:24px;font-size:10px;">m</div>
-    <div style="font-family:'Noto Serif JP',serif;font-size:13px;color:var(--red);letter-spacing:2px;">morich</div>
-  </div>
-  <nav class="footer-nav">
-    <a href="#">求人を探す</a>
-    <a href="#">会社概要</a>
-    <a href="#">プライバシーポリシー</a>
-    <a href="mailto:info@morich.jp">お問い合わせ</a>
-  </nav>
-  <div class="footer-copy">© 2025 morich Inc. All rights reserved.</div>
-</footer>
+<div class="footer">
+  <div class="footer-logo">morich</div>
+  © 2025 morich Inc.
+</div>
 
 <script>
-const PER_PAGE = 21;
-let allJobs = [];
-let filtered = [];
-let currentPage = 1;
-let activeFilter = 'all';
-let searchQuery = '';
+const PER_PAGE = 30;
+let allJobs = [], filtered = [], currentPage = 1;
+let activeFilter = 'all', searchQuery = '';
 
-function remoteBadge(remote) {
-  if (!remote) return '';
-  if (remote.includes('フルリモート')) return '<span class="jc-badge remote-full">🏠 フルリモート</span>';
-  if (remote.includes('ハイブリッド'))  return '<span class="jc-badge remote-hybrid">🔀 ハイブリッド</span>';
-  if (remote.includes('基本出社'))       return '<span class="jc-badge remote-office">🏢 出社</span>';
+function remoteBadge(r){
+  if(!r) return '';
+  if(r.includes('フルリモート')) return '<span class="ji-tag red">🏠 フルリモート</span>';
+  if(r.includes('ハイブリッド'))  return '<span class="ji-tag">🔀 ハイブリッド</span>';
   return '';
 }
 
-function salaryShort(s) {
-  if (!s) return '';
-  // 「〇万円〜△万円」のような形式を短縮
-  return s.length > 28 ? s.slice(0, 26) + '…' : s;
-}
-
-function renderCard(j) {
+function renderItem(j){
   const rb = remoteBadge(j.remote);
-  const sj = j.sideJob && j.sideJob.includes('可') ? '<span class="jc-badge sidejob">副業可</span>' : '';
-  const li = j.stock && j.stock !== '非上場' && j.stock !== '' ? `<span class="jc-badge listed">${j.stock}</span>` : '';
-  const rec = j.recommend ? j.recommend.replace(/\n/g, ' ').trim() : '';
-  return `<a class="job-card" href="detail.html?id=${encodeURIComponent(j.id)}">
-  <div class="jc-top">
-    <div class="jc-badges">
-      ${j.industry ? `<span class="jc-badge industry">${j.industry}</span>` : ''}
-      ${rb}${sj}${li}
+  const sj = j.sideJob && j.sideJob.includes('可') ? '<span class="ji-tag">副業可</span>' : '';
+  const li = j.stock && j.stock !== '非上場' ? `<span class="ji-tag">${esc(j.stock)}</span>` : '';
+  const rec = (j.recommend||'').replace(/\n/g,' ').trim();
+  return `<a class="job-item" href="detail.html?id=${encodeURIComponent(j.id)}">
+  <div class="ji-top">
+    <div>
+      <div class="ji-company">${esc(j.company)}</div>
+      <div class="ji-position">${esc(j.position||'ポジション調整中')}</div>
     </div>
-    <div class="jc-company">${j.company}</div>
-    <div class="jc-title">${j.position || '（ポジション未定）'}</div>
-    ${rec ? `<div class="jc-recommend">${rec}</div>` : ''}
+    ${j.salary ? `<div class="ji-salary">${esc(j.salary)}</div>` : ''}
   </div>
-  <div class="jc-bottom">
-    <div class="jc-location">
-      <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-      ${j.location || '要相談'}
-    </div>
-    ${j.salary ? `<div class="jc-salary">${salaryShort(j.salary)}</div>` : ''}
+  <div class="ji-tags">
+    ${j.industry ? `<span class="ji-tag">${esc(j.industry)}</span>` : ''}
+    ${rb}${sj}${li}
   </div>
+  ${rec ? `<div class="ji-recommend">${esc(rec)}</div>` : ''}
+  ${j.location ? `<div class="ji-location"><svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>${esc(j.location)}</div>` : ''}
 </a>`;
 }
 
-function applyFilter() {
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function applyFilter(){
   const q = searchQuery.toLowerCase();
-  filtered = allJobs.filter(j => {
-    const matchFilter = activeFilter === 'all' || j.industry === activeFilter;
-    const matchSearch = !q || [j.company, j.position, j.industry, j.recommend, j.requirements]
-      .some(f => (f || '').toLowerCase().includes(q));
-    return matchFilter && matchSearch;
+  filtered = allJobs.filter(j=>{
+    const mf = activeFilter === 'all' || j.industry === activeFilter;
+    const ms = !q || [j.company,j.position,j.industry,j.recommend,j.requirements]
+                     .some(f=>(f||'').toLowerCase().includes(q));
+    return mf && ms;
   });
   currentPage = 1;
   renderPage();
 }
 
-function renderPage() {
+function renderPage(){
   const total = filtered.length;
   const totalPages = Math.ceil(total / PER_PAGE);
-  const start = (currentPage - 1) * PER_PAGE;
-  const pageJobs = filtered.slice(start, start + PER_PAGE);
+  const slice = filtered.slice((currentPage-1)*PER_PAGE, currentPage*PER_PAGE);
 
-  document.getElementById('result-count').innerHTML =
-    `<strong>${total}</strong> 件`;
+  document.getElementById('result-count').innerHTML = `<strong>${total}</strong> 件`;
 
-  if (total === 0) {
+  if(total === 0){
     document.getElementById('jobs-container').innerHTML =
-      `<div class="empty"><div class="empty-icon">🔍</div><p>条件に合う求人が見つかりませんでした。<br>キーワードや絞り込みを変えてみてください。</p></div>`;
+      '<div class="empty">条件に合う求人が見つかりませんでした。</div>';
     document.getElementById('pagination').innerHTML = '';
     return;
   }
 
-  document.getElementById('jobs-container').innerHTML =
-    `<div class="jobs-grid">${pageJobs.map(renderCard).join('')}</div>`;
-
+  document.getElementById('jobs-container').innerHTML = slice.map(renderItem).join('');
   renderPagination(totalPages);
-  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
-function renderPagination(totalPages) {
-  if (totalPages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+function renderPagination(total){
+  if(total<=1){ document.getElementById('pagination').innerHTML=''; return; }
   const p = currentPage;
-  let btns = [];
-
-  btns.push(`<button class="page-btn" onclick="goPage(${p-1})" ${p===1?'disabled':''}>‹</button>`);
-
-  const pages = new Set([1, totalPages, p-1, p, p+1].filter(n => n >= 1 && n <= totalPages));
-  let prev = 0;
-  for (const n of [...pages].sort((a,b)=>a-b)) {
-    if (prev && n - prev > 1) btns.push(`<span class="page-info">…</span>`);
-    btns.push(`<button class="page-btn ${n===p?'active':''}" onclick="goPage(${n})">${n}</button>`);
-    prev = n;
+  const pages = new Set([1,total,p-1,p,p+1].filter(n=>n>=1&&n<=total));
+  let html = `<button class="pbtn" onclick="goPage(${p-1})" ${p===1?'disabled':''}>‹</button>`;
+  let prev=0;
+  for(const n of [...pages].sort((a,b)=>a-b)){
+    if(prev && n-prev>1) html += `<span class="page-info">…</span>`;
+    html += `<button class="pbtn ${n===p?'active':''}" onclick="goPage(${n})">${n}</button>`;
+    prev=n;
   }
-
-  btns.push(`<button class="page-btn" onclick="goPage(${p+1})" ${p===totalPages?'disabled':''}>›</button>`);
-  btns.push(`<span class="page-info">${p} / ${totalPages} ページ</span>`);
-
-  document.getElementById('pagination').innerHTML = btns.join('');
+  html += `<button class="pbtn" onclick="goPage(${p+1})" ${p===total?'disabled':''}>›</button>`;
+  html += `<span class="page-info">${p} / ${total}</span>`;
+  document.getElementById('pagination').innerHTML = html;
 }
 
-function goPage(n) {
-  currentPage = n;
-  renderPage();
-}
+function goPage(n){ currentPage=n; renderPage(); window.scrollTo({top:0,behavior:'smooth'}); }
 
-// イベント
-document.getElementById('filter-bar').addEventListener('click', e => {
-  const tag = e.target.closest('.filter-tag');
-  if (!tag) return;
-  document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
-  tag.classList.add('active');
-  activeFilter = tag.dataset.filter;
+document.getElementById('filter-bar').addEventListener('click', e=>{
+  const t = e.target.closest('.ftag');
+  if(!t) return;
+  document.querySelectorAll('.ftag').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  activeFilter = t.dataset.filter;
   applyFilter();
 });
 
-let searchTimer;
-document.getElementById('search-input').addEventListener('input', e => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    searchQuery = e.target.value.trim();
-    applyFilter();
-  }, 250);
+let timer;
+document.getElementById('search-input').addEventListener('input', e=>{
+  clearTimeout(timer);
+  timer = setTimeout(()=>{ searchQuery = e.target.value.trim(); applyFilter(); }, 250);
 });
 
-// データ読み込み
 fetch('jobs.json')
-  .then(r => r.json())
-  .then(data => {
+  .then(r=>r.json())
+  .then(data=>{
     allJobs = data;
     document.getElementById('stat-count').innerHTML = `${data.length}<span>件</span>`;
     applyFilter();
   })
-  .catch(() => {
+  .catch(()=>{
     document.getElementById('jobs-container').innerHTML =
-      '<div class="empty"><div class="empty-icon">⚠️</div><p>求人データの読み込みに失敗しました。</p></div>';
+      '<div class="empty">データの読み込みに失敗しました。</div>';
   });
 </script>
 </body>
