@@ -239,7 +239,7 @@ function renderCard(j) {
   const sj = j.sideJob && j.sideJob.includes('可') ? '<span class="jc-badge sidejob">副業可</span>' : '';
   const li = j.stock && j.stock !== '非上場' && j.stock !== '' ? `<span class="jc-badge listed">${j.stock}</span>` : '';
   const rec = j.recommend ? j.recommend.replace(/\n/g, ' ').trim() : '';
-  return `<a class="job-card" href="mailto:info@morich.jp?subject=求人応募: ${encodeURIComponent(j.position)}&body=求人ID: ${j.id}">
+  return `<a class="job-card" href="detail.html?id=${encodeURIComponent(j.id)}">
   <div class="jc-top">
     <div class="jc-badges">
       ${j.industry ? `<span class="jc-badge industry">${j.industry}</span>` : ''}
