@@ -209,7 +209,7 @@ function renderCard(j){
 function applyFilter(){
   const q = searchQuery.toLowerCase();
   filtered = allJobs.filter(j=>{
-    const mf = activeFilter==='all' || j.jobCat===activeFilter;
+    const mf = activeFilter==='all' || (j.jobCats||[]).includes(activeFilter);
     const ms = !q || [j.company,j.position,j.industry,j.rec].some(f=>(f||'').toLowerCase().includes(q));
     return mf && ms;
   });
