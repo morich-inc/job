@@ -19,8 +19,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--warm);color:var(--te
 .site-header{background:#fff;border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:10;}
 @media(max-width:600px){.site-header{padding:0 18px;}}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.logo-mark{width:32px;height:32px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Noto Serif JP',serif;font-size:12px;font-weight:700;}
-.logo-text{font-family:'Noto Serif JP',serif;font-size:17px;color:var(--red);letter-spacing:2.5px;}
+.logo img{height:32px;width:auto;display:block;}
 .logo-sub{font-size:9.5px;color:var(--text-light);letter-spacing:1.2px;margin-top:1px;}
 
 /* ヒーロー */
@@ -28,9 +27,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--warm);color:var(--te
 .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,0.05);}
 .hero::after{content:'';position:absolute;bottom:-60px;left:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.04);}
 .hero-inner{position:relative;z-index:1;}
-.hero-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;}
-.hero-logo-mark{width:44px;height:44px;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Noto Serif JP',serif;font-size:16px;}
-.hero-logo-name{font-family:'Noto Serif JP',serif;font-size:26px;color:#fff;letter-spacing:4px;}
+.hero-logo{display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+.hero-logo img{height:52px;width:auto;filter:brightness(0) invert(1);}
 .hero-tagline{font-size:13px;color:rgba(255,255,255,0.82);line-height:1.85;max-width:480px;margin:0 auto 28px;}
 .hero-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;}
 .hero-stat{text-align:center;}
@@ -103,19 +101,15 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--warm);color:var(--te
 
 <header class="site-header">
   <a class="logo" href="index.html">
-    <div class="logo-mark">m</div>
-    <div>
-      <div class="logo-text">morich</div>
-      <div class="logo-sub">JOBS</div>
-    </div>
+    <img src="https://i.ibb.co/5hr7Mvv0/morich-logo.jpg" alt="morich">
+    <div class="logo-sub">JOBS</div>
   </a>
 </header>
 
 <section class="hero">
   <div class="hero-inner">
     <div class="hero-logo">
-      <div class="hero-logo-mark">m</div>
-      <div class="hero-logo-name">morich</div>
+      <img src="https://i.ibb.co/5hr7Mvv0/morich-logo.jpg" alt="morich">
     </div>
     <div class="hero-tagline">厳選された求人を、プロのコンサルタントがご紹介します。</div>
     <div class="hero-stats">
