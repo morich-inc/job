@@ -28,7 +28,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--warm);color:var(--te
 .hero::after{content:'';position:absolute;bottom:-60px;left:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.04);}
 .hero-inner{position:relative;z-index:1;}
 .hero-logo{display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
-.hero-logo img{height:52px;width:auto;filter:brightness(0) invert(1);}
+.hero-logo img{height:52px;width:auto;background:#fff;padding:6px 14px;border-radius:8px;}
 .hero-tagline{font-size:13px;color:rgba(255,255,255,0.82);line-height:1.85;max-width:480px;margin:0 auto 28px;}
 .hero-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;}
 .hero-stat{text-align:center;}
@@ -141,14 +141,15 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--warm);color:var(--te
   </div>
   <div class="filter-bar" id="filter-bar">
     <div class="ftag active" data-filter="all">すべて</div>
-    <div class="ftag" data-filter="IT・通信・インターネット">IT・通信</div>
-    <div class="ftag" data-filter="サービス・レジャー">サービス</div>
-    <div class="ftag" data-filter="金融・保険">金融・保険</div>
-    <div class="ftag" data-filter="メーカー">メーカー</div>
-    <div class="ftag" data-filter="コンサルティング">コンサル</div>
-    <div class="ftag" data-filter="不動産・建設・設備">不動産</div>
-    <div class="ftag" data-filter="流通・小売">流通・小売</div>
-    <div class="ftag" data-filter="マスコミ・広告・デザイン">マスコミ</div>
+    <div class="ftag" data-filter="経営（CxO）">経営（CxO）</div>
+    <div class="ftag" data-filter="経営企画">経営企画</div>
+    <div class="ftag" data-filter="人事">人事</div>
+    <div class="ftag" data-filter="マーケティング">マーケティング</div>
+    <div class="ftag" data-filter="広報PR">広報PR</div>
+    <div class="ftag" data-filter="事業開発">事業開発</div>
+    <div class="ftag" data-filter="営業系">営業系</div>
+    <div class="ftag" data-filter="総務">総務</div>
+    <div class="ftag" data-filter="その他">その他</div>
   </div>
 </div>
 
@@ -208,7 +209,7 @@ function renderCard(j){
 function applyFilter(){
   const q = searchQuery.toLowerCase();
   filtered = allJobs.filter(j=>{
-    const mf = activeFilter==='all' || j.industry===activeFilter;
+    const mf = activeFilter==='all' || j.jobCat===activeFilter;
     const ms = !q || [j.company,j.position,j.industry,j.rec].some(f=>(f||'').toLowerCase().includes(q));
     return mf && ms;
   });
