@@ -161,7 +161,7 @@ function render(j){
   const reqRows = [
     ['ポジション', j.position],
     ['雇用形態',   j.employment],
-    ['勤務地',     j.location],
+    ['勤務地',     j.locationDetail || j.location],
     ['勤務時間',   j.workHours],
     ['休日休暇',   j.holiday],
     ['リモート',   j.remote],
@@ -247,11 +247,7 @@ function render(j){
         ${textBlock(j.backgroundDetail || j.background)}
       </div>` : ''}
 
-      ${j.selection ? `
-      <div class="section">
-        <div class="sec-title">🔍 選考ポイント</div>
-        ${textBlock(j.selection)}
-      </div>` : ''}
+
 
 
     </div>`;

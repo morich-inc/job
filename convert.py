@@ -101,7 +101,7 @@ def parse_jobcats(raw):
 jobs_list = []
 jobs_full = []
 
-with open('C:/Users/furuy/Downloads/export_2026-04-13_08-32-45.csv',
+with open('C:/Users/furuy/Downloads/export_2026-04-13_09-07-18.csv',
           encoding='utf-8-sig') as f:
     reader = csv.DictReader(f)
     for row in reader:
@@ -145,6 +145,7 @@ with open('C:/Users/furuy/Downloads/export_2026-04-13_08-32-45.csv',
             'category':         clean(row, '職種', 60),
             'employment':       clean(row, '雇用形態'),
             'location':         clean(row, '勤務地'),
+            'locationDetail':   clean(row, '勤務地(詳細)'),
             'salary':           salary,
             'salaryDetail':     clean(row, '給与(詳細)'),
             'remote':           clean(row, 'リモートワーク制度'),
@@ -160,8 +161,7 @@ with open('C:/Users/furuy/Downloads/export_2026-04-13_08-32-45.csv',
             'reqDetail':        clean(row, '応募資格(詳細)'),
             'background':       clean(row, '募集背景'),
             'backgroundDetail': clean(row, '募集背景(詳細)'),
-            'selection':        clean(row, '選考ポイント'),
-            'persona':          clean(row, '求める人材像'),
+            'persona':          clean(row, '求める人物像'),
             'welfare':          clean(row, '待遇・福利厚生'),
             'holiday':          clean(row, '休日休暇'),
             'workHours':        clean(row, '勤務時間'),
