@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>morich｜候補者カード作成ツール</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#C8253A;--red-light:#f7e8ea;--red-mid:#e8c0c6;--red-dark:#8f1528;
+  --rose:#fdf2f3;--warm:#fffaf9;
+  --text:#2a1a1c;--text-mid:#7a5058;--text-light:#b08890;
+  --border:rgba(200,37,58,0.15);--bsoft:rgba(200,37,58,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--warm);color:var(--text);min-height:100vh;}
+
+/* header */
+.site-header{background:#fff;border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;}
+.logo-wrap{display:flex;align-items:center;gap:8px;}
+.logo-mark{width:30px;height:30px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Noto Serif JP',serif;font-size:12px;flex-shrink:0;}
+.logo-text{font-family:'Noto Serif JP',serif;font-size:16px;color:var(--red);letter-spacing:2px;}
+.logo-sub{font-size:10px;color:var(--text-light);letter-spacing:1.2px;margin-top:1px;}
+.api-status{font-size:11px;color:var(--text-light);display:flex;align-items:center;gap:5px;}
+.api-dot{width:7px;height:7px;border-radius:50%;background:#ccc;}
+.api-dot.ok{background:#5aaa7a;}
+
+/* layout */
+.layout{display:grid;grid-template-columns:420px 1fr;min-height:calc(100vh - 58px);}
+@media(max-width:900px){.layout{grid-template-columns:1fr;}}
+
+/* 左パネル */
+.input-panel{padding:24px 28px;border-right:1px solid var(--bsoft);background:#fff;display:flex;flex-direction:column;gap:14px;overflow-y:auto;}
+.panel-title{font-family:'Noto Serif JP',serif;font-size:13px;color:var(--red);letter-spacing:1px;display:flex;align-items:center;gap:7px;}
+.panel-title::before{content:'';display:block;width:3px;height:14px;background:var(--red);border-radius:2px;}
+.form-label{font-size:10.5px;font-weight:500;color:var(--text-mid);letter-spacing:0.7px;margin-bottom:4px;}
+textarea,input[type=text],input[type=password]{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--text);background:var(--rose);outline:none;transition:border-color .2s;}
+textarea:focus,input:focus{border-color:var(--red);background:#fff;}
+textarea::placeholder,input::placeholder{color:var(--text-light);}
+textarea{resize:vertical;line-height:1.8;}
+#raw{min-height:180px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.generate-btn{padding:12px;background:var(--red);color:#fff;border:none;border-radius:9px;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:0.8px;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:7px;}
+.generate-btn:hover{background:var(--red-dark);}
+.generate-btn:disabled{background:var(--red-mid);cursor:not-allowed;}
+.clear-btn{padding:12px;background:#fff;color:var(--text-mid);border:1px solid var(--border);border-radius:9px;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:0.8px;transition:all .2s;display:none;}
+.clear-btn:hover{background:var(--rose);border-color:var(--red-mid);color:var(--red);}
+.hint{font-size:11px;color:var(--text-light);line-height:1.7;padding:9px 11px;background:var(--rose);border-radius:7px;border:1px solid var(--bsoft);}
+
+/* spinner */
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* 右パネル */
+.output-panel{padding:24px 28px;background:var(--warm);display:flex;flex-direction:column;gap:12px;overflow-y:auto;}
+.out-top{display:flex;align-items:center;justify-content:space-between;}
+.done-badge{font-size:10.5px;background:var(--red-light);color:var(--red);border:1px solid var(--red-mid);border-radius:20px;padding:3px 11px;display:none;}
+
+.tabs{display:flex;gap:1px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.tab{padding:7px 14px;font-size:12px;cursor:pointer;color:var(--text-light);border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:'Noto Sans JP',sans-serif;transition:all .15s;}
+.tab.active{color:var(--red);border-bottom-color:var(--red);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* empty */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:260px;gap:10px;color:var(--text-light);}
+.empty-circle{width:44px;height:44px;border-radius:50%;background:var(--red-light);display:flex;align-items:center;justify-content:center;}
+.empty-text{font-size:12.5px;}
+
+/* ── カード本体 ── */
+.card-wrap{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 2px 16px rgba(200,37,58,0.06);}
+
+/* ヘッダー：名前を白背景で読みやすく */
+.c-header{background:linear-gradient(135deg,#C8253A 0%,#e05a6e 100%);padding:0 0 16px;position:relative;overflow:hidden;}
+.c-header::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.c-header::after{content:'';position:absolute;bottom:-30px;left:40px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.04);}
+
+/* 名前エリア：白い帯で可読性UP */
+.name-band{background:rgba(255,255,255,0.97);padding:18px 22px 14px;display:flex;align-items:center;gap:14px;position:relative;}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--red-light);border:2px solid var(--red-mid);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif JP',serif;font-size:15px;color:var(--red);flex-shrink:0;}
+.hname{font-family:'Noto Serif JP',serif;font-size:21px;font-weight:500;color:var(--text);letter-spacing:1.5px;line-height:1.2;}
+.hname-kana{font-size:12px;color:var(--text-mid);margin-top:3px;letter-spacing:0.5px;}
+.hname-meta{font-size:11.5px;color:var(--text-light);margin-top:2px;}
+
+/* タグエリア：赤背景の上 */
+.ctags-wrap{padding:12px 22px 0;position:relative;}
+.ctags{display:flex;flex-wrap:wrap;gap:5px;}
+.ctag{font-size:10.5px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,0.18);color:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.3);}
+
+.c-body{padding:18px 22px;}
+.cs{margin-bottom:15px;}
+.cs:last-child{margin-bottom:0;}
+.csl{font-size:9.5px;font-weight:500;color:var(--red);letter-spacing:1.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.csl::after{content:'';flex:1;height:1px;background:var(--red-mid);}
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{background:var(--rose);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:12px;}
+.chip-l{color:var(--text-light);font-size:10px;margin-bottom:2px;}
+.chip-v{font-weight:500;color:var(--text);}
+.career-list,.alist{display:flex;flex-direction:column;gap:5px;}
+.crow{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.6;}
+.cdot{width:5px;height:5px;border-radius:50%;background:var(--red-mid);flex-shrink:0;margin-top:7px;}
+.aitem{background:var(--rose);border-left:3px solid var(--red);border-radius:0 7px 7px 0;padding:8px 11px;font-size:12.5px;line-height:1.6;}
+.schips{display:flex;flex-wrap:wrap;gap:5px;}
+.schip{font-size:11px;padding:4px 10px;border-radius:20px;background:#fff;border:1px solid var(--border);color:var(--text-mid);}
+.rbox{background:var(--rose);border-radius:9px;padding:13px;border:1px solid var(--bsoft);}
+.rsbox{background:#fff;border-radius:9px;padding:13px;border:1px solid var(--border);}
+.rbox p,.rsbox p{font-size:12.5px;line-height:1.85;color:var(--text);}
+.cdiv{border:none;border-top:1px solid var(--bsoft);margin:13px 0;}
+.c-footer{border-top:1px solid var(--bsoft);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:var(--rose);}
+.cons-info{display:flex;align-items:center;gap:9px;}
+.cons-av{width:30px;height:30px;border-radius:50%;background:var(--red-light);border:1px solid var(--red-mid);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--red);}
+.cname-t{font-size:12.5px;font-weight:500;}
+.ccontact-t{font-size:10.5px;color:var(--text-light);margin-top:1px;}
+.mbadge{display:flex;align-items:center;gap:5px;}
+.mbadge-m{width:18px;height:18px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Noto Serif JP',serif;font-size:8px;}
+.mbadge-t{font-family:'Noto Serif JP',serif;font-size:11px;color:var(--red);letter-spacing:1.5px;}
+.doclink{font-size:12px;font-weight:500;color:#fff;background:var(--red);text-decoration:none;display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:7px;transition:background .2s;}
+.doclink:hover{background:var(--red-dark);}
+
+/* コードエリア */
+.code-area{position:relative;}
+.code-box{background:#1e1214;border-radius:10px;padding:14px;overflow:auto;max-height:420px;font-family:monospace;font-size:11px;color:#e8d0d4;line-height:1.7;white-space:pre-wrap;word-break:break-all;}
+.code-copy-btn{position:absolute;top:9px;right:9px;padding:5px 13px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+.code-copy-btn:hover{background:var(--red-dark);}
+.copy-ok{font-size:11px;color:var(--red);display:none;margin-top:4px;text-align:right;}
+
+/* howto */
+.inst-box{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;}
+.inst-title{font-size:12px;font-weight:500;color:var(--red);margin-bottom:12px;}
+.inst-step{display:flex;gap:9px;margin-bottom:9px;align-items:flex-start;}
+.inst-num{width:19px;height:19px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.inst-text{font-size:12px;color:var(--text);line-height:1.65;}
+.inst-text code{background:var(--rose);padding:1px 5px;border-radius:4px;font-size:10.5px;color:var(--red);}
+
+.status-bar{font-size:12px;color:var(--text-mid);text-align:center;min-height:16px;}
+.status-bar.err{color:var(--red);}
+
+/* インライン編集 */
+#card-preview [contenteditable]:hover{outline:1px dashed var(--red-mid);border-radius:3px;cursor:text;}
+#card-preview [contenteditable]:focus{outline:2px solid var(--red);border-radius:3px;background:rgba(255,255,255,0.6);}
+.preview-sync-bar{position:sticky;bottom:12px;display:none;justify-content:center;margin-top:10px;}
+.preview-sync-bar.visible{display:flex;}
+.preview-sync-btn{background:var(--red);color:#fff;border:none;border-radius:20px;padding:9px 22px;font-size:12px;font-weight:500;font-family:'Noto Sans JP',sans-serif;cursor:pointer;box-shadow:0 3px 12px rgba(200,37,58,0.3);transition:background .2s;}
+.preview-sync-btn:hover{background:var(--red-dark);}
+.del-btn{display:none;position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:var(--red);color:#fff;border:none;cursor:pointer;font-size:10px;line-height:16px;text-align:center;padding:0;z-index:10;}
+.deletable{position:relative;}
+.deletable:hover .del-btn{display:block;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo-wrap">
+    <div class="logo-mark">m</div>
+    <div>
+      <div class="logo-text">morich</div>
+      <div class="logo-sub">CANDIDATE CARD GENERATOR</div>
+    </div>
+  </div>
+  <div class="api-status" style="gap:8px;">
+    <div class="api-dot" id="api-dot"></div>
+    <span id="api-label" style="cursor:pointer;" onclick="toggleApiInput()" title="クリックしてAPIキーを設定">APIキー未設定</span>
+    <div id="api-input-wrap" style="display:none;align-items:center;gap:6px;">
+      <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." style="width:260px;font-size:11px;padding:5px 8px;">
+      <button onclick="saveApiKey()" style="padding:5px 10px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;">保存</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- 左：入力 -->
+  <div class="input-panel">
+    <div class="panel-title">候補者情報を入力</div>
+
+    <div>
+      <div class="form-label">面談メモ・略歴・推薦文など（そのまま貼り付けてOK）</div>
+      <textarea id="raw" placeholder="例）
+もりち、永遠の28歳、Love大学Happy学部卒業
+リクルート→morich
+現在All Rounder Agentとして大活躍中
+年収300万
+・××××
+・××××
+転職理由：自由日羽ばたきたい
+
+※どんな形式でもOKです。情報が少なくてもAIが補完します。"></textarea>
+    </div>
+
+    <div>
+      <div class="form-label">担当コンサルタント</div>
+      <div class="two-col">
+        <input type="text" id="c-name" placeholder="氏名（例：森本 千賀子）">
+        <input type="text" id="c-contact" placeholder="連絡先（例：090-xxxx-xxxx）">
+      </div>
+    </div>
+
+    <div>
+      <div class="form-label">書類URL（任意）</div>
+      <input type="text" id="doc-url" placeholder="https://drive.google.com/...">
+    </div>
+
+    <button class="generate-btn" id="gen-btn" onclick="generate()">
+      <div class="spinner" id="spinner"></div>
+      <span id="btn-label">AIで推薦カードを生成する</span>
+    </button>
+
+    <button class="clear-btn" id="clear-btn" onclick="clearForm()">次の人へ（クリア）</button>
+
+    <div class="status-bar" id="status"></div>
+
+    <div class="hint">
+      ✦ 面談メモや略歴をそのまま貼ればAIが推薦文を考えます<br>
+      ✦ 年収・学歴など情報がなければ項目を省略します<br>
+      ✦ 生成後のHTMLをGitHubに貼るだけでURLが完成します
+    </div>
+  </div>
+
+  <!-- 右：出力 -->
+  <div class="output-panel">
+    <div class="out-top">
+      <div class="panel-title">プレビュー & 出力</div>
+      <span class="done-badge" id="done-badge">生成完了！</span>
+    </div>
+
+    <div id="tabs-wrap" style="display:none;">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('preview',this)">カードプレビュー</button>
+        <button class="tab" onclick="switchTab('messenger',this)">📨 Messenger送付文</button>
+        <button class="tab" onclick="switchTab('code',this)">HTMLコード</button>
+        <button class="tab" onclick="switchTab('howto',this)">GitHubへの貼り方</button>
+      </div>
+    </div>
+
+    <div id="tab-preview" class="tab-content active">
+      <div class="empty-state" id="empty">
+        <div class="empty-circle">
+          <svg width="20" height="20" fill="none" stroke="#C8253A" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 8h10M7 12h6M7 16h8"/></svg>
+        </div>
+        <div class="empty-text">左に情報を貼り付けて生成ボタンを押してください</div>
+      </div>
+      <div id="card-preview"></div>
+      <div class="preview-sync-bar" id="sync-bar">
+        <button class="preview-sync-btn" onclick="syncFromPreview()">HTMLコードに反映する</button>
+      </div>
+    </div>
+
+    <div id="tab-messenger" class="tab-content">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:11px;font-weight:500;color:var(--text-mid);letter-spacing:0.7px;">MESSENGER 送付文</div>
+        <div style="font-size:11.5px;color:var(--text-light);line-height:1.7;background:var(--rose);border-radius:7px;padding:10px 12px;border:1px solid var(--bsoft);">
+          GitHubにHTMLをアップ後、下のURL欄にURLを入力してからコピーしてください。
+        </div>
+        <div id="messenger-box" contenteditable="true" style="font-size:13px;line-height:1.9;color:var(--text);white-space:pre-wrap;background:var(--rose);border:1px solid var(--border);border-radius:9px;padding:14px;min-height:120px;outline:none;cursor:text;"></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="card-url" placeholder="https://morich.github.io/..." oninput="updateMessenger()" style="flex:1;min-width:200px;">
+          <button class="generate-btn" style="width:auto;padding:9px 16px;font-size:12px;" onclick="copyMessenger()">コピー</button>
+          <span id="copy-ok-msg" style="font-size:11px;color:var(--red);display:none;">コピーしました！</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-code" class="tab-content">
+      <div class="code-area">
+        <div class="code-box" id="code-box"></div>
+        <button class="code-copy-btn" onclick="copyHtml()">HTMLをコピー</button>
+      </div>
+      <div class="copy-ok" id="copy-ok">コピーしました！</div>
+    </div>
+
+    <div id="tab-howto" class="tab-content">
+      <div class="inst-box">
+        <div class="inst-title">GitHubでURLを作る手順</div>
+        <div class="inst-step"><div class="inst-num">1</div><div class="inst-text">「HTMLコード」タブを開き「HTMLをコピー」ボタンを押す</div></div>
+        <div class="inst-step"><div class="inst-num">2</div><div class="inst-text">GitHubのmorichリポジトリを開き「Add file → Create new file」をクリック</div></div>
+        <div class="inst-step"><div class="inst-num">3</div><div class="inst-text">ファイル名を <code>候補者名.html</code>（例：<code>jinbu_kento.html</code>）にする</div></div>
+        <div class="inst-step"><div class="inst-num">4</div><div class="inst-text">エディタにコピーしたHTMLを貼り付けて「Commit changes」を押す</div></div>
+        <div class="inst-step"><div class="inst-num">5</div><div class="inst-text"><code>https://（アカウント名）.github.io/（リポジトリ名）/候補者名.html</code> がURLです。MessengerにURLを貼るだけで相手がきれいなカードを見られます！</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function getApiKey() {
+  return localStorage.getItem('morich_api_key') || '';
+}
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key) return;
+  localStorage.setItem('morich_api_key', key);
+  document.getElementById('api-input-wrap').style.display = 'none';
+  updateApiStatus();
+}
+function toggleApiInput() {
+  const wrap = document.getElementById('api-input-wrap');
+  const showing = wrap.style.display !== 'none';
+  wrap.style.display = showing ? 'none' : 'flex';
+  if (!showing) {
+    const input = document.getElementById('api-key-input');
+    input.value = getApiKey();
+    input.focus();
+  }
+}
+function updateApiStatus() {
+  const key = getApiKey();
+  const dot = document.getElementById('api-dot');
+  const label = document.getElementById('api-label');
+  if (key) {
+    dot.className = 'api-dot ok';
+    label.textContent = 'AI連携済み';
+  } else {
+    dot.className = 'api-dot';
+    label.textContent = 'APIキー未設定（クリックして設定）';
+  }
+}
+document.addEventListener('DOMContentLoaded', updateApiStatus);
+
+let generatedHtml = '';
+
+async function generate() {
+  const raw = document.getElementById('raw').value.trim();
+  if (!raw) { setStatus('候補者情報を入力してください', true); return; }
+
+  const apiKey = getApiKey();
+  if (!apiKey) { setStatus('APIキーが設定されていません。右上をクリックして設定してください', true); return; }
+
+  setBusy(true);
+  setStatus('AIが推薦文を考えています...');
+
+  const systemPrompt = `あなたは人材エージェント会社morichの優秀なコンサルタントです。
+入力された候補者情報（面談メモ・略歴・バラバラなメモなど）をもとに、候補者の魅力を最大限に引き出した推薦カード情報をJSONで返してください。
+
+【出力ルール】
+- 情報がない項目は null にする（空文字不可）
+- 年収・学歴など明記されていない情報は絶対に作らない
+- tagsは情報から読み取れるキーワードを3〜5個
+- careerは時系列で簡潔に3〜5項目
+- achievementsは具体的な数字・成果を含む実績を3〜6項目（情報が少ない場合は省略可）
+- skillsは箇条書きで5〜8個
+- recommendationは300字前後で、この候補者をぜひ会ってみたいと思わせる推薦文を書く。morichのコンサルタントらしい温かみと専門性を込めて。
+- reasonは転職理由を簡潔に2〜3文で
+
+以下のJSON形式のみ返してください。前置き・説明・コードブロック記号は一切不要です。
+
+{
+  "name": "氏名（漢字）",
+  "kana": "読み仮名（ひらがな）またはnull",
+  "age": "37歳などの文字列またはnull",
+  "edu": "最終学歴またはnull",
+  "co": "現職会社名またはnull",
+  "title": "現職役職またはnull",
+  "salary": "現年収（例：550万円）またはnull",
+  "tags": ["タグ1","タグ2"],
+  "career": ["略歴1","略歴2"],
+  "achievements": ["実績1","実績2"],
+  "skills": ["スキル1","スキル2"],
+  "recommendation": "推薦ポイントの文章",
+  "reason": "転職理由の文章またはnull"
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: raw }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const rawText = (data.content||[]).map(b=>b.text||'').join('');
+    const si = rawText.indexOf('{');
+    const ei = rawText.lastIndexOf('}');
+    if (si === -1 || ei === -1) throw new Error('JSONが見つかりませんでした');
+    const src = rawText.slice(si, ei + 1);
+    const buf = [];
+    for (let i = 0; i < src.length; i++) {
+      const code = src.charCodeAt(i);
+      if (code >= 32 || code === 9) buf.push(src[i]);
+    }
+    const d = JSON.parse(buf.join(''));
+    renderCard(d);
+    setStatus('');
+  } catch(e) {
+    setStatus('エラー: ' + e.message, true);
+  } finally {
+    setBusy(false);
+  }
+}
+
+function renderCard(d) {
+  const cName    = document.getElementById('c-name').value.trim();
+  const cContact = document.getElementById('c-contact').value.trim();
+  const docUrl   = document.getElementById('doc-url').value.trim();
+
+  const innerEditable = buildInner(d, cName, cContact, docUrl, true);
+  const innerClean    = buildInner(d, cName, cContact, docUrl, false);
+  document.getElementById('empty').style.display = 'none';
+  document.getElementById('card-preview').innerHTML = innerEditable;
+
+  window._cardData = d;
+  generatedHtml = buildFullHtml(d, cName, cContact, docUrl, innerClean);
+  document.getElementById('code-box').textContent = generatedHtml;
+
+  document.getElementById('tabs-wrap').style.display = 'block';
+  document.getElementById('done-badge').style.display = 'inline';
+  document.getElementById('clear-btn').style.display = 'block';
+  document.getElementById('sync-bar').classList.remove('visible');
+  updateMessenger();
+  switchTab('preview', document.querySelector('.tab'));
+}
+
+function clearForm() {
+  document.getElementById('raw').value = '';
+  document.getElementById('card-url').value = '';
+  document.getElementById('card-preview').innerHTML = '';
+  document.getElementById('empty').style.display = 'flex';
+  document.getElementById('tabs-wrap').style.display = 'none';
+  document.getElementById('done-badge').style.display = 'none';
+  document.getElementById('clear-btn').style.display = 'none';
+  document.getElementById('code-box').textContent = '';
+  document.getElementById('messenger-box').textContent = '';
+  document.getElementById('status').textContent = '';
+  generatedHtml = '';
+  window._cardData = null;
+  document.getElementById('raw').focus();
+}
+
+function delBtn() {
+  return '<button class="del-btn" onclick="this.closest(\'.deletable\').remove();document.getElementById(\'sync-bar\').classList.add(\'visible\');">x</button>';
+}
+
+function buildInner(d, cName, cContact, docUrl, editable = false) {
+  const ce  = editable ? ' contenteditable="true"' : '';
+  const df  = editable ? f  => ` data-field="${f}"` : () => '';
+  const dfi = editable ? (f,i) => ` data-field="${f}" data-idx="${i}"` : () => '';
+  const db  = editable ? delBtn() : '';
+
+  const ini = d.name ? d.name.replace(/\s/g,'').slice(0,2) : '　';
+  const tagsH = (d.tags||[]).map((t,i)=>`<span class="ctag deletable"${ce}${dfi('tag',i)}>${e(t)}${db}</span>`).join('');
+  const carH  = (d.career||[]).filter(Boolean).map((c,i)=>`<div class="crow deletable"><div class="cdot"></div><div${ce}${dfi('career',i)}>${e(c)}</div>${db}</div>`).join('');
+  const achH  = (d.achievements||[]).filter(Boolean).map((a,i)=>`<div class="aitem deletable"${ce}${dfi('achievement',i)}>${e(a)}${db}</div>`).join('');
+  const skH   = (d.skills||[]).filter(Boolean).map((s,i)=>`<span class="schip deletable"${ce}${dfi('skill',i)}>${e(s)}${db}</span>`).join('');
+
+  const metaParts = [d.kana, d.age, d.edu].filter(Boolean);
+
+  const chips = [
+    d.co    ? `<div class="chip deletable"><div class="chip-l">現職</div><div class="chip-v"${ce}${df('co')}>${e(d.co)}</div>${db}</div>` : '',
+    d.title ? `<div class="chip deletable"><div class="chip-l">役職</div><div class="chip-v"${ce}${df('title')}>${e(d.title)}</div>${db}</div>` : '',
+    d.salary? `<div class="chip deletable"><div class="chip-l">現年収</div><div class="chip-v"${ce}${df('salary')}>${e(d.salary)}</div>${db}</div>` : '',
+  ].filter(Boolean).join('');
+
+  const consH = cName ? `
+    <div class="cons-info">
+      <div class="cons-av">${e(cName.replace(/\s/g,'').slice(-2))}</div>
+      <div>
+        <div class="cname-t">${e(cName)}</div>
+        ${cContact?`<div class="ccontact-t">${e(cContact)}</div>`:''}
+      </div>
+    </div>` : `<div></div>`;
+
+  const docH = docUrl ? `<a class="doclink" href="${e(docUrl)}" target="_blank"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>履歴書・職務経歴書</a>` : '';
+
+  return `<div class="card-wrap">
+  <div class="c-header">
+    <div class="name-band">
+      <div class="avatar">${ini}</div>
+      <div>
+        <div class="hname"${ce}${df('name')}>${e(d.name||'')}</div>
+        ${d.kana?`<div class="hname-kana"${ce}${df('kana')}>${e(d.kana)}</div>`:''}
+        ${metaParts.filter(p=>p!==d.kana).length?`<div class="hname-meta"${ce}${df('meta')}>${metaParts.filter(p=>p!==d.kana).map(e).join('　｜　')}</div>`:''}
+      </div>
+    </div>
+    ${tagsH?`<div class="ctags-wrap"><div class="ctags">${tagsH}</div></div>`:''}
+  </div>
+  <div class="c-body">
+    ${chips?`<div class="cs"><div class="csl">基本情報</div><div class="chips">${chips}</div></div>`:''}
+    ${carH?`<hr class="cdiv"><div class="cs"><div class="csl">略歴</div><div class="career-list">${carH}</div></div>`:''}
+    ${achH?`<hr class="cdiv"><div class="cs"><div class="csl">主な実績</div><div class="alist">${achH}</div></div>`:''}
+    ${skH?`<hr class="cdiv"><div class="cs"><div class="csl">スキル</div><div class="schips">${skH}</div></div>`:''}
+    ${d.recommendation?`<hr class="cdiv"><div class="cs"><div class="csl">推薦ポイント</div><div class="rbox"><p${ce}${df('recommendation')}>${e(d.recommendation)}</p></div></div>`:''}
+    ${d.reason?`<hr class="cdiv"><div class="cs"><div class="csl">転職理由</div><div class="rsbox"><p${ce}${df('reason')}>${e(d.reason)}</p></div></div>`:''}
+  </div>
+  <div class="c-footer">
+    ${consH}
+    <div style="display:flex;align-items:center;gap:10px;">
+      ${docH}
+      <div class="mbadge"><div class="mbadge-m">m</div><div class="mbadge-t">morich</div></div>
+    </div>
+  </div>
+</div>`;
+}
+
+function buildFullHtml(d, cName, cContact, docUrl, inner) {
+  return `<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${e(d.name||'候補者')}｜morich ご推薦</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--red:#C8253A;--red-light:#f7e8ea;--red-mid:#e8c0c6;--red-dark:#8f1528;--rose:#fdf2f3;--warm:#fffaf9;--text:#2a1a1c;--text-mid:#7a5058;--text-light:#b08890;--border:rgba(200,37,58,0.15);--bsoft:rgba(200,37,58,0.08);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--warm);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 40px;}
+.page-header{width:100%;max-width:640px;display:flex;align-items:center;gap:7px;margin-bottom:20px;}
+.logo-m{width:26px;height:26px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Noto Serif JP',serif;font-size:10px;}
+.logo-t{font-family:'Noto Serif JP',serif;font-size:14px;color:var(--red);letter-spacing:2px;}
+.card-wrap{width:100%;max-width:640px;background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 2px 20px rgba(200,37,58,0.07);}
+.c-header{background:linear-gradient(135deg,#C8253A 0%,#e05a6e 100%);padding:0 0 16px;position:relative;overflow:hidden;}
+.c-header::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.name-band{background:rgba(255,255,255,0.97);padding:18px 22px 14px;display:flex;align-items:center;gap:14px;position:relative;}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--red-light);border:2px solid var(--red-mid);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif JP',serif;font-size:15px;color:var(--red);flex-shrink:0;}
+.hname{font-family:'Noto Serif JP',serif;font-size:21px;font-weight:500;color:var(--text);letter-spacing:1.5px;line-height:1.2;}
+.hname-kana{font-size:12px;color:var(--text-mid);margin-top:3px;}
+.hname-meta{font-size:11.5px;color:var(--text-light);margin-top:2px;}
+.ctags-wrap{padding:12px 22px 0;position:relative;}
+.ctags{display:flex;flex-wrap:wrap;gap:5px;}
+.ctag{font-size:10.5px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,0.18);color:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.3);}
+.c-body{padding:18px 22px;}
+.cs{margin-bottom:15px;}.cs:last-child{margin-bottom:0;}
+.csl{font-size:9.5px;font-weight:500;color:var(--red);letter-spacing:1.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.csl::after{content:'';flex:1;height:1px;background:var(--red-mid);}
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{background:var(--rose);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:12px;}
+.chip-l{color:var(--text-light);font-size:10px;margin-bottom:2px;}.chip-v{font-weight:500;color:var(--text);}
+.career-list,.alist{display:flex;flex-direction:column;gap:5px;}
+.crow{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.6;}
+.cdot{width:5px;height:5px;border-radius:50%;background:var(--red-mid);flex-shrink:0;margin-top:7px;}
+.aitem{background:var(--rose);border-left:3px solid var(--red);border-radius:0 7px 7px 0;padding:8px 11px;font-size:12.5px;line-height:1.6;}
+.schips{display:flex;flex-wrap:wrap;gap:5px;}
+.schip{font-size:11px;padding:4px 10px;border-radius:20px;background:#fff;border:1px solid var(--border);color:var(--text-mid);}
+.rbox{background:var(--rose);border-radius:9px;padding:13px;border:1px solid var(--bsoft);}
+.rsbox{background:#fff;border-radius:9px;padding:13px;border:1px solid var(--border);}
+.rbox p,.rsbox p{font-size:12.5px;line-height:1.85;color:var(--text);}
+.cdiv{border:none;border-top:1px solid var(--bsoft);margin:13px 0;}
+.c-footer{border-top:1px solid var(--bsoft);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:var(--rose);}
+.cons-info{display:flex;align-items:center;gap:9px;}
+.cons-av{width:30px;height:30px;border-radius:50%;background:var(--red-light);border:1px solid var(--red-mid);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--red);}
+.cname-t{font-size:12.5px;font-weight:500;}.ccontact-t{font-size:10.5px;color:var(--text-light);margin-top:1px;}
+.mbadge{display:flex;align-items:center;gap:5px;}
+.mbadge-m{width:18px;height:18px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Noto Serif JP',serif;font-size:8px;}
+.mbadge-t{font-family:'Noto Serif JP',serif;font-size:11px;color:var(--red);letter-spacing:1.5px;}
+.doclink{font-size:12px;font-weight:500;color:#fff;background:var(--red);text-decoration:none;display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:7px;}
+.page-footer{margin-top:14px;font-size:11px;color:var(--text-light);text-align:center;}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="logo-m">m</div>
+  <div class="logo-t">morich</div>
+</div>
+${inner}
+<div class="page-footer">このページはmorichからのご推薦資料です。取り扱いにご注意ください。</div>
+</body>
+</html>`;
+}
+
+function e(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+}
+
+function copyHtml() {
+  navigator.clipboard.writeText(generatedHtml).then(()=>{
+    const el = document.getElementById('copy-ok');
+    el.style.display='block';
+    setTimeout(()=>el.style.display='none', 2500);
+  });
+}
+
+function updateMessenger() {
+  const d = window._cardData;
+  if (!d) return;
+  const url = document.getElementById('card-url').value.trim();
+  const cName = document.getElementById('c-name').value.trim();
+  const cContact = document.getElementById('c-contact').value.trim();
+
+  // キャッチコピー行を組み立て
+  const tags = (d.tags||[]).slice(0,2).join('と');
+  const catchCopy = tags ? `${tags}の領域で即戦力としてご活躍いただける方です！` : `即戦力としてご活躍いただける方のご紹介です！`;
+
+  // 名前行
+  const nameLine = [
+    d.name,
+    d.kana ? `（${d.kana}）` : '',
+    d.age ? `／${d.age}` : ''
+  ].filter(Boolean).join('');
+
+  // 学歴行
+  const eduLine = d.edu ? `（${d.edu}）` : '';
+
+  // 現職行
+  const jobLine = [d.co, d.title].filter(Boolean).join('／');
+
+  let lines = [];
+  lines.push(catchCopy);
+  lines.push(`◆${nameLine}`);
+  if (eduLine) lines.push(eduLine);
+  if (jobLine) lines.push(`現職：${jobLine}`);
+  if (d.salary) lines.push(`現年収：${d.salary}`);
+  lines.push('');
+  if (url) {
+    lines.push('以下URLよりご確認いただけますと幸いです。');
+    lines.push(url);
+  } else {
+    lines.push('以下URLよりご確認いただけますと幸いです。');
+    lines.push('（GitHubにアップ後、URLをここに入力してください）');
+  }
+  lines.push('');
+  lines.push('お忙しい中誠に恐縮ですが、ご確認のうえ、ご面談の機会をお願いいたします。');
+  if (cName) {
+    lines.push('');
+    lines.push(`担当：${cName}${cContact ? '　' + cContact : ''}`);
+    lines.push('株式会社morich');
+  }
+
+  window._messengerText = lines.join(String.fromCharCode(10));
+  document.getElementById('messenger-box').textContent = window._messengerText;
+}
+
+function copyMessenger() {
+  const box = document.getElementById('messenger-box');
+  const text = box.innerText || box.textContent || '';
+  if (!text.trim()) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('copy-ok-msg');
+    el.style.display = 'inline';
+    setTimeout(() => el.style.display = 'none', 2500);
+  });
+}
+
+function syncFromPreview() {
+  const d = Object.assign({}, window._cardData);
+  const preview = document.getElementById('card-preview');
+  const get    = f => { const el = preview.querySelector('[data-field="' + f + '"]'); return el ? (el.innerText.trim() || null) : null; };
+  const getAll = f => Array.from(preview.querySelectorAll('[data-field="' + f + '"]')).map(el => el.innerText.trim()).filter(Boolean);
+
+  if (get('name')           !== null) d.name           = get('name');
+  if (get('kana')           !== null) d.kana           = get('kana');
+  if (get('co')             !== null) d.co             = get('co');
+  if (get('title')          !== null) d.title          = get('title');
+  if (get('salary')         !== null) d.salary         = get('salary');
+  if (get('recommendation') !== null) d.recommendation = get('recommendation');
+  if (get('reason')         !== null) d.reason         = get('reason');
+
+  const meta = get('meta');
+  if (meta !== null) {
+    const parts = meta.split(/[\s\u3000]*[\u007c\uff5c][\s\u3000]*/).map(s => s.trim()).filter(Boolean);
+    d.age = parts.find(p => p.indexOf('\u6b73') !== -1) || null;
+    d.edu = parts.find(p => p && p.indexOf('\u6b73') === -1) || null;
+  }
+
+  // 削除された項目は除外、残っている項目は編集後テキストで更新
+  const chipEls = preview.querySelectorAll('.chip.deletable');
+  d.co     = null; d.title = null; d.salary = null;
+  chipEls.forEach(el => {
+    const label = (el.querySelector('.chip-l') || {}).textContent || '';
+    const val   = (el.querySelector('.chip-v') || {}).innerText.trim();
+    if (label.indexOf('\u73fe\u8077') !== -1) d.co     = val;
+    if (label.indexOf('\u5f79\u8077') !== -1) d.title  = val;
+    if (label.indexOf('\u5e74\u53ce') !== -1) d.salary = val;
+  });
+
+  const tags = getAll('tag');        if (tags.length)    d.tags         = tags;
+  const career = getAll('career');   if (career.length)  d.career       = career;
+  const ach = getAll('achievement'); if (ach.length)     d.achievements = ach;
+  const skills = getAll('skill');    if (skills.length)  d.skills       = skills;
+
+  window._cardData = d;
+  const cName    = document.getElementById('c-name').value.trim();
+  const cContact = document.getElementById('c-contact').value.trim();
+  const docUrl   = document.getElementById('doc-url').value.trim();
+  const innerClean = buildInner(d, cName, cContact, docUrl, false);
+  generatedHtml = buildFullHtml(d, cName, cContact, docUrl, innerClean);
+  document.getElementById('code-box').textContent = generatedHtml;
+  updateMessenger();
+  document.getElementById('sync-bar').classList.remove('visible');
+  setStatus('HTMLコードに反映しました');
+  setTimeout(() => setStatus(''), 3000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('card-preview').addEventListener('input', function() {
+    document.getElementById('sync-bar').classList.add('visible');
+  });
+  document.getElementById('card-preview').addEventListener('keydown', function(ev) {
+    var multiline = ['recommendation', 'reason', 'career', 'achievement'];
+    if (ev.key === 'Enter' && multiline.indexOf((ev.target.dataset || {}).field) === -1) {
+      ev.preventDefault();
+    }
+  });
+});
+
+function setBusy(b) {
+  document.getElementById('gen-btn').disabled = b;
+  document.getElementById('spinner').style.display = b?'block':'none';
+  document.getElementById('btn-label').textContent = b?'生成中...':'AIで推薦カードを生成する';
+}
+function setStatus(msg, isErr) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status-bar'+(isErr?' err':'');
+}
+</script>
+</body>
+</html>
